@@ -13,47 +13,98 @@ body {
 
   /* Enhance the sidebar menu buttons */
   [data-sidebar="menu-button"] {
-    @apply rounded-md transition-all duration-200 ease-in-out;
-  }
-
-  [data-sidebar="menu-button"]:hover {
-    @apply bg-primary/10;
+    @apply rounded-lg transition-all duration-200 ease-in-out;
+    @apply hover:bg-sidebar-accent/10 hover:translate-x-1;
   }
 
   [data-sidebar="menu-button"][data-active="true"] {
-    @apply bg-primary/15 font-medium;
-    @apply border-l-4 border-l-primary;
-    @apply shadow-sm;
+    @apply bg-gradient-to-r from-sidebar-accent/20 to-transparent;
+    @apply border-l-4 border-l-sidebar-accent;
+    @apply font-medium shadow-sm;
   }
 
   [data-sidebar="menu-button"] svg {
-    @apply text-muted-foreground transition-colors;
+    @apply text-sidebar-foreground/60 transition-all duration-200;
   }
 
   [data-sidebar="menu-button"]:hover svg,
   [data-sidebar="menu-button"][data-active="true"] svg {
-    @apply text-primary;
+    @apply text-sidebar-accent scale-110;
   }
 
   /* Add subtle effects to the sidebar */
   [data-sidebar="sidebar"] {
     @apply transition-all duration-300 ease-in-out;
-    background-image: linear-gradient(to bottom, hsl(var(--sidebar-background)), hsl(var(--sidebar-background)));
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, hsl(var(--sidebar-background)), hsl(var(--sidebar-background)/0.97));
+    box-shadow: 
+      inset -1px 0 0 rgba(0, 0, 0, 0.05),
+      0 4px 20px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Style the header area */
+  [data-sidebar="header"] {
+    @apply bg-gradient-to-b from-sidebar-accent/5 to-transparent;
+    @apply border-b border-sidebar-border/30;
+    @apply pb-4;
+  }
+
+  /* Style the footer area */
+  [data-sidebar="footer"] {
+    @apply bg-gradient-to-t from-sidebar-accent/5 to-transparent;
+    @apply border-t border-sidebar-border/30;
+    @apply pt-4;
   }
 
   /* Add subtle animation to the menu items */
   [data-sidebar="menu-item"] {
-    @apply transition-transform duration-200;
+    @apply transition-all duration-200;
   }
   
   [data-sidebar="menu-item"]:hover {
     @apply translate-x-1;
   }
 
+  /* Style the group labels */
+  [data-sidebar="group-label"] {
+    @apply text-sidebar-foreground/50 font-medium;
+    @apply uppercase tracking-wider text-[11px];
+  }
+
   /* Style the separators */
   [data-sidebar="separator"] {
-    @apply bg-primary/10;
+    @apply bg-sidebar-border/30;
+  }
+
+  /* Style the input */
+  [data-sidebar="input"] {
+    @apply bg-white/50 border-sidebar-border/30;
+    @apply hover:border-sidebar-accent/30 focus:border-sidebar-accent;
+    @apply placeholder:text-sidebar-foreground/30;
+  }
+
+  /* Style the menu sub items */
+  [data-sidebar="menu-sub"] {
+    @apply border-l-sidebar-border/30;
+  }
+
+  [data-sidebar="menu-sub-button"] {
+    @apply hover:bg-sidebar-accent/10 transition-all duration-200;
+    @apply text-sidebar-foreground/70 hover:text-sidebar-foreground;
+  }
+
+  [data-sidebar="menu-sub-button"][data-active="true"] {
+    @apply bg-sidebar-accent/15 text-sidebar-accent;
+  }
+
+  /* Add hover effect to the rail */
+  [data-sidebar="rail"] {
+    @apply hover:bg-sidebar-accent/5 transition-colors duration-200;
+  }
+
+  /* Style the trigger button */
+  [data-sidebar="trigger"] {
+    @apply hover:bg-sidebar-accent/10 transition-all duration-200;
+    @apply text-sidebar-foreground/60 hover:text-sidebar-accent;
   }
 }
 
@@ -89,15 +140,15 @@ body {
 
     --radius: 0.5rem;
 
-    /* Sidebar */
+    /* Enhanced Sidebar Colors */
     --sidebar-background: 220 33% 98%;
     --sidebar-foreground: 222.2 84% 4.9%;
     --sidebar-primary: 221.2 83.2% 53.3%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 221.2 83.2% 53.3%;
+    --sidebar-accent: 224.3 76.3% 48%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 221.2 83.2% 53.3%;
+    --sidebar-ring: 224.3 76.3% 48%;
   }
 
   .dark {
@@ -129,12 +180,12 @@ body {
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
 
-    /* Sidebar */
+    /* Enhanced Dark Mode Sidebar Colors */
     --sidebar-background: 222.2 47.4% 11.2%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 210 40% 98%;
     --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 224.3 76.3% 48%;
+    --sidebar-accent: 217.2 91.2% 59.8%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 224.3 76.3% 48%;

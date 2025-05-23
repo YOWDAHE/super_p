@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Search, Eye, CheckCircle, XCircle, X } from "lucide-react"
+import { Search, Eye, CheckCircle, XCircle, X, UserIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -136,33 +136,49 @@ export default function PendingVerificationsPage() {
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6 p-6 bg-gradient-to-b from-slate-50 to-white min-h-screen">
       <Toaster />
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pending Verifications</h1>
-          <p className="text-muted-foreground">Review and verify organizations waiting for approval</p>
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-yellow-600 to-orange-600 text-transparent bg-clip-text">
+            Pending Verifications
+          </h1>
+          <p className="text-slate-500">Review and verify organizations waiting for approval</p>
         </div>
         <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
           <Input
             type="search"
             placeholder="Search pending organizations..."
-            className="w-full pl-8 md:w-[250px] lg:w-[300px]"
+            className="w-full pl-8 md:w-[250px] lg:w-[300px] border-slate-200 focus:border-yellow-500 focus:ring-yellow-500 rounded-lg"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Organizations Awaiting Verification</CardTitle>
+      <Card className="w-full overflow-hidden bg-gradient-to-br from-yellow-500 to-orange-600 text-white shadow-lg">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Pending Organizations</CardTitle>
+          <UserIcon className="h-4 w-4 opacity-75" />
         </CardHeader>
         <CardContent>
+          <div className="text-2xl font-bold">{pendingOrgs.length}</div>
+          <p className="text-xs opacity-75">Organizations awaiting verification</p>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full shadow-lg border-0">
+        <CardHeader className="border-b border-slate-100 bg-slate-50">
+          <CardTitle className="text-lg font-semibold text-slate-800">Organizations Awaiting Verification</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
           {loading ? (
             <div className="flex justify-center py-8">
-              <p>Loading pending organizations...</p>
+              <div className="flex items-center gap-2 text-slate-600">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-yellow-600 border-t-transparent"></div>
+                <p>Loading pending organizations...</p>
+              </div>
             </div>
           ) : error ? (
             <div className="flex justify-center py-8 text-red-500">
@@ -172,61 +188,42 @@ export default function PendingVerificationsPage() {
             <div className="w-full overflow-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Contact Number</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Date Joined</TableHead>
-                    <TableHead>Verification ID</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                  <TableRow className="bg-slate-50 hover:bg-slate-50">
+                    <TableHead className="font-semibold text-slate-700">Name</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Contact Number</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Email</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Date Joined</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Status</TableHead>
+                    <TableHead className="w-[50px] font-semibold text-slate-700">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredOrganizations.length > 0 ? (
                     filteredOrganizations.map((org) => (
-                      <TableRow key={org.id}>
-                        <TableCell className="font-medium">{org.profile?.name || "N/A"}</TableCell>
-                        <TableCell>{org.profile?.contact_phone || "N/A"}</TableCell>
-                        <TableCell>{org.email}</TableCell>
-                        <TableCell>
+                      <TableRow key={org.id} className="hover:bg-slate-50 transition-colors">
+                        <TableCell className="font-medium text-slate-900">{org.profile?.name || "N/A"}</TableCell>
+                        <TableCell className="text-slate-600">{org.profile?.contact_phone || "N/A"}</TableCell>
+                        <TableCell className="text-slate-600">{org.email}</TableCell>
+                        <TableCell className="text-slate-600">
                           {org.date_joined ? 
-                            new Date(org.date_joined).toLocaleDateString() : 
+                            new Date(org.date_joined).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            }) : 
                             "N/A"
                           }
                         </TableCell>
                         <TableCell>
-                          {org.profile?.verification_id ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                if (org.profile && org.profile.verification_id) {
-                                  handleViewVerification(org.profile.verification_id, org.id);
-                                }
-                              }}
-                            >
-                              View ID
-                            </Button>
-                          ) : (
-                            "No ID"
-                          )}
+                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700">Pending</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                            Pending
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {org.profile && (
+                          {org.profile?.verification_id && (
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => {
-                                if (org.profile && org.profile.verification_id) {
-                                  handleViewVerification(org.profile.verification_id, org.id);
-                                }
-                              }}
+                              className="hover:bg-slate-100"
+                              onClick={() => handleViewVerification(org.profile?.verification_id || null, org.id)}
                             >
                               <Eye className="h-4 w-4" />
                               <span className="sr-only">View details</span>
@@ -237,7 +234,7 @@ export default function PendingVerificationsPage() {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center">
+                      <TableCell colSpan={6} className="text-center text-slate-500 py-8">
                         {loading ? "Loading..." : "No pending organizations found"}
                       </TableCell>
                     </TableRow>
@@ -249,10 +246,10 @@ export default function PendingVerificationsPage() {
         </CardContent>
       </Card>
 
-      {/* Full-screen verification image modal */}
+      {/* Verification Image Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
-          <div className="relative max-h-screen max-w-screen-lg overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
+          <div className="relative max-h-screen max-w-screen-lg overflow-hidden rounded-xl bg-white shadow-2xl">
             <Button
               variant="ghost"
               size="icon"
@@ -262,23 +259,22 @@ export default function PendingVerificationsPage() {
               <X className="h-6 w-6" />
             </Button>
 
-            <div className="relative h-[80vh] w-[90vw] max-w-4xl">
+            <div className="relative h-[80vh] w-[90vw] max-w-4xl bg-slate-100">
               <Image
                 src={selectedImage || "/placeholder.svg"}
                 alt="Verification Document"
                 fill
                 className="object-contain"
                 onError={(e) => {
-                  // Fallback if image fails to load
-                  const target = e.target as HTMLImageElement
-                  target.src = "/placeholder.svg"
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/placeholder.svg";
                 }}
               />
             </div>
 
             <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-4">
               <Button 
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700" 
+                className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white shadow-lg transition-all hover:shadow-xl" 
                 onClick={handleApprove}
                 disabled={isProcessing}
               >
@@ -286,7 +282,7 @@ export default function PendingVerificationsPage() {
                 Approve
               </Button>
               <Button 
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700" 
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white shadow-lg transition-all hover:shadow-xl" 
                 onClick={handleDeny}
                 disabled={isProcessing}
               >
@@ -298,5 +294,5 @@ export default function PendingVerificationsPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

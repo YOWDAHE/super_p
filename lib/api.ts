@@ -93,4 +93,29 @@ export async function verifyOrganization(
     console.error(`Error ${status === 'approved' ? 'approving' : 'denying'} organization:`, error);
     throw error;
   }
+}
+
+/**
+ * Deletes an organization by ID
+ * @param id Organization ID to delete
+ * @returns Promise resolving when the organization is deleted
+ */
+export async function deleteOrganization(id: number): Promise<void> {
+  try {
+    const url = `https://www.mindahun.pro.et/api/v1/organizations/${id}/`;
+    
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to delete organization. Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error deleting organization:', error);
+    throw error;
+  }
 } 
